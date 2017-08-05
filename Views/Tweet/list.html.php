@@ -9,12 +9,12 @@
  * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 if ($tmpl == 'index') {
-    $view->extend('MauticSocialBundle:Monitoring:index.html.php');
+    $view->extend('MauticSocialBundle:Tweet:index.html.php');
 }
 ?>
 <?php if (count($items)): ?>
     <div class="table-responsive">
-        <table class="table table-hover table-striped table-bordered monitoring-list" id="monitoringTable">
+        <table class="table table-hover table-striped table-bordered tweet-list" id="tweetTable">
             <thead>
             <tr>
                 <?php
@@ -22,11 +22,11 @@ if ($tmpl == 'index') {
                     'MauticCoreBundle:Helper:tableheader.html.php',
                     [
                         'checkall'        => 'true',
-                        'target'          => '#monitoringTable',
-                        'langVar'         => 'mautic.social.monitoring',
-                        'routeBase'       => 'social',
+                        'target'          => '#tweetTable',
+                        'langVar'         => 'mautic.social.tweets',
+                        'routeBase'       => 'mautic_tweet',
                         'templateButtons' => [
-                            'delete' => $view['security']->isGranted('plugin:mauticSocial:monitoring:delete'),
+                            'delete' => $view['security']->isGranted('plugin:mauticSocial:tweet:delete'),
                         ],
                     ]
                 );
@@ -34,10 +34,10 @@ if ($tmpl == 'index') {
                 echo $view->render(
                     'MauticCoreBundle:Helper:tableheader.html.php',
                     [
-                        'sessionVar' => 'social.monitoring',
-                        'orderBy'    => 'e.title',
-                        'text'       => 'mautic.core.title',
-                        'class'      => 'col-monitoring-title',
+                        'sessionVar' => 'social.tweet',
+                        'orderBy'    => 'e.name',
+                        'text'       => 'mautic.core.name',
+                        'class'      => 'col-tweet-name',
                         'default'    => true,
                     ]
                 );
@@ -45,7 +45,7 @@ if ($tmpl == 'index') {
                 echo $view->render(
                     'MauticCoreBundle:Helper:tableheader.html.php',
                     [
-                        'sessionVar' => 'social.monitoring',
+                        'sessionVar' => 'social.tweet',
                         'orderBy'    => 'e.id',
                         'text'       => 'mautic.core.id',
                         'class'      => 'visible-md visible-lg col-asset-id',
@@ -64,12 +64,12 @@ if ($tmpl == 'index') {
                             [
                                 'item'            => $item,
                                 'templateButtons' => [
-                                    'edit'   => $view['security']->isGranted('plugin:mauticSocial:monitoring:edit'),
-                                    'delete' => $view['security']->isGranted('plugin:mauticSocial:monitoring:delete'),
+                                    'edit'   => $view['security']->isGranted('plugin:mauticSocial:tweet:edit'),
+                                    'delete' => $view['security']->isGranted('plugin:mauticSocial:tweet:delete'),
                                 ],
-                                'routeBase'  => 'social',
-                                'langVar'    => 'mautic.social.monitoring',
-                                'nameGetter' => 'getTitle',
+                                'routeBase'  => 'mautic_tweet',
+                                'langVar'    => 'mautic.integration.Twitter',
+                                'nameGetter' => 'getName',
                             ]
                         );
                         ?>
@@ -80,15 +80,15 @@ if ($tmpl == 'index') {
                                 'MauticCoreBundle:Helper:publishstatus_icon.html.php',
                                 [
                                     'item'  => $item,
-                                    'model' => 'social.monitoring',
+                                    'model' => 'social.tweet',
                                 ]
                             ); ?>
                             <a href="<?php echo $view['router']->path(
-                                'mautic_social_action',
-                                ['objectAction' => 'view', 'objectId' => $item->getId()]
+                                'mautic_tweet_action',
+                                ['objectAction' => 'edit', 'objectId' => $item->getId()]
                             ); ?>"
                                data-toggle="ajax">
-                                <?php echo $item->getTitle(); ?>
+                                <?php echo $item->getName(); ?>
                             </a>
                         </div>
                         <?php if ($description = $item->getDescription()): ?>
@@ -110,21 +110,14 @@ if ($tmpl == 'index') {
                 'totalItems' => count($items),
                 'page'       => $page,
                 'limit'      => $limit,
-                'menuLinkId' => 'mautic_campaign_index',
-                'baseUrl'    => $view['router']->path('mautic_social_index'),
-                'sessionVar' => 'social.monitoring',
-                'routeBase'  => 'social',
+                'menuLinkId' => 'mautic_tweet_index',
+                'baseUrl'    => $view['router']->path('mautic_tweet_index'),
+                'sessionVar' => 'social.tweet',
+                'routeBase'  => 'tweet',
             ]
         ); ?>
     </div>
 <?php else: ?>
-    <?php echo $view->render('MauticCoreBundle:Helper:noresults.html.php', ['tip' => 'mautic.mautic.social.monitoring.noresults.tip']); ?>
+    <?php echo $view->render('MauticCoreBundle:Helper:noresults.html.php', ['tip' => 'mautic.mautic.social.tweet.noresults.tip']); ?>
 <?php endif; ?>
 
-<?php echo $view->render(
-    'MauticCoreBundle:Helper:modal.html.php',
-    [
-        'id'     => 'MonitoringPreviewModal',
-        'header' => false,
-    ]
-);
