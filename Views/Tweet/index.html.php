@@ -10,9 +10,9 @@
  */
 $view->extend('MauticCoreBundle:Default:content.html.php');
 
-$view['slots']->set('mauticContent', 'monitoring');
+$view['slots']->set('mauticContent', 'tweet');
 
-$view['slots']->set('headerTitle', $view['translator']->trans('mautic.social.monitoring'));
+$view['slots']->set('headerTitle', $view['translator']->trans('mautic.social.tweets'));
 
 $view['slots']->set(
     'actions',
@@ -20,10 +20,10 @@ $view['slots']->set(
         'MauticCoreBundle:Helper:page_actions.html.php',
         [
             'templateButtons' => [
-                'new' => $view['security']->isGranted('plugin:mauticSocial:monitoring:create'),
+                'new' => $view['security']->isGranted('plugin:mauticSocial:tweet:create'),
             ],
-            'routeBase' => 'social',
-            'langVar'   => 'monitoring',
+            'routeBase' => 'mautic_tweet',
+            'langVar'   => 'tweet',
         ]
     )
 );
