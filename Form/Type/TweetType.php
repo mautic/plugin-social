@@ -171,7 +171,7 @@ class TweetType extends AbstractType
         $resolver->setDefined(['update_select']);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'twitter_tweet';
     }
