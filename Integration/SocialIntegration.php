@@ -19,7 +19,6 @@ use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Router;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -36,7 +35,6 @@ abstract class SocialIntegration extends AbstractIntegration
         EventDispatcherInterface $eventDispatcher,
         CacheStorageHelper $cacheStorageHelper,
         EntityManager $entityManager,
-        Session $session,
         RequestStack $requestStack,
         Router $router,
         Translator $translator,
@@ -55,7 +53,6 @@ abstract class SocialIntegration extends AbstractIntegration
             $eventDispatcher,
             $cacheStorageHelper,
             $entityManager,
-            $session,
             $requestStack,
             $router,
             $translator,
