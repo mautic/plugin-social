@@ -247,15 +247,15 @@ abstract class SocialIntegration extends AbstractIntegration
      */
     protected function getContactAccessToken(&$socialCache)
     {
-        if (!$this->session) {
+        if (!$this->requestStack->getCurrentRequest()->hasSession()) {
             return null;
         }
 
-        if (!$this->session->isStarted()) {
+        if (!$this->requestStack->getSession()->isStarted()) {
             return (isset($socialCache['accessToken'])) ? $this->decryptApiKeys($socialCache['accessToken']) : null;
         }
 
-        $accessToken = $this->session->get($this->getName().'_tokenResponse', []);
+        $accessToken = $this->requestStack->getSession()->get($this->getName().'_tokenResponse', []);
         if (!isset($accessToken[$this->getAuthTokenKey()])) {
             if (isset($socialCache['accessToken'])) {
                 $accessToken = $this->decryptApiKeys($socialCache['accessToken']);
@@ -263,7 +263,7 @@ abstract class SocialIntegration extends AbstractIntegration
                 return null;
             }
         } else {
-            $this->session->remove($this->getName().'_tokenResponse');
+            $this->requestStack->getSession()->remove($this->getName().'_tokenResponse');
             $socialCache['accessToken'] = $this->encryptApiKeys($accessToken);
 
             $this->persistNewLead = true;
