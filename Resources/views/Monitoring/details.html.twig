@@ -9,19 +9,35 @@
 
 {% block headerTitle activeMonitoring.title %}
 
+{% block indexButton %}
+{{- include('@MauticCore/Helper/page_actions.html.twig',
+    {
+        'item'            : activeMonitoring,
+        'templateButtons' : {
+            'close' : securityIsGranted('mauticSocial:monitoring:view'),
+        },
+        'routeBase'       : 'social',
+        'langVar'         : 'monitoring',
+        'targetLabel'     : 'mautic.social.monitoring'|trans
+    }
+) -}}
+{% endblock %}
+
 {% block actions %}
-    {# @todo finish ACL here #}
-    {{ include('@MauticCore/Helper/page_actions.html.twig', {
+    {{- include('@MauticCore/Helper/page_actions.html.twig', {
         'item': activeMonitoring,
         'templateButtons': {
             'edit': securityIsGranted('mauticSocial:monitoring:edit'),
             'delete': securityIsGranted('mauticSocial:monitoring:delete'),
-            'close': securityIsGranted('mauticSocial:monitoring:view'),
         },
         'routeBase': 'social',
         'langVar': 'monitoring',
         'nameGetter': 'getTitle',
-    }) }}
+    }) -}}
+{% endblock %}
+
+{% block publishStatus %}
+{{ include('@MauticCore/Helper/publishstatus_badge.html.twig', {'entity': activeMonitoring}) }}
 {% endblock %}
 
 {% block content %}
@@ -36,9 +52,6 @@
                   <div class="box-layout">
                       <div class="col-xs-10 va-m">
                           <div class="text-white dark-sm mb-0">{{ activeMonitoring.description|purify }}</div>
-                      </div>
-                      <div class="col-xs-2 text-right">
-                          {{ include('@MauticCore/Helper/publishstatus_badge.html.twig', {'entity': activeMonitoring}) }}
                       </div>
                   </div>
               </div>
