@@ -12,13 +12,13 @@
       {{ include('@MauticCore/Helper/list_toolbar.html.twig', {
         'searchValue': searchValue,
         'action': currentRoute,
-        'page_actions': include('@MauticCore/Helper/toolbar_page_actions.html.twig', {
+        'page_actions': {
             'templateButtons': {
                 'new': securityIsGranted('mauticSocial:tweet:create'),
             },
             'routeBase': 'mautic_tweet',
             'langVar': 'tweet',
-        })
+        }
     }) }}
       <div class="page-list">
         {{- include('@MauticSocial/Tweet/_list.html.twig') -}}
