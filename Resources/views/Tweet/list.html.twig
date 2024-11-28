@@ -18,7 +18,14 @@
             },
             'routeBase': 'mautic_tweet',
             'langVar': 'tweet',
-        }
+        },
+        'bulk_actions': {
+          'langVar': 'mautic.social.tweets',
+          'routeBase': 'mautic_tweet',
+          'templateButtons': {
+              'delete': securityIsGranted('mauticSocial:tweet:delete'),
+          },
+      },
     }) }}
       <div class="page-list">
         {{- include('@MauticSocial/Tweet/_list.html.twig') -}}
