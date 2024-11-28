@@ -19,6 +19,13 @@
                 'routeBase': 'social',
                 'langVar': 'monitoring',
             },
+            'bulk_actions': {
+                'langVar': 'mautic.social.monitoring',
+                'routeBase': 'social',
+                'templateButtons': {
+                    'delete': securityIsGranted('mauticSocial:monitoring:delete'),
+                },
+            },
             'quickFilters': [
                 {
                     'search': 'mautic.core.searchcommand.ispublished',
