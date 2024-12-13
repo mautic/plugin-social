@@ -8,6 +8,7 @@ use Mautic\CoreBundle\Helper\EncryptionHelper;
 use Mautic\CoreBundle\Helper\PathsHelper;
 use Mautic\CoreBundle\Model\NotificationModel;
 use Mautic\CoreBundle\Translation\Translator;
+use Mautic\LeadBundle\Field\FieldsWithUniqueIdentifier;
 use Mautic\LeadBundle\Model\CompanyModel;
 use Mautic\LeadBundle\Model\DoNotContact;
 use Mautic\LeadBundle\Model\FieldModel;
@@ -45,6 +46,7 @@ abstract class SocialIntegration extends AbstractIntegration
         PathsHelper $pathsHelper,
         NotificationModel $notificationModel,
         FieldModel $fieldModel,
+        FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier,
         IntegrationEntityModel $integrationEntityModel,
         DoNotContact $doNotContact,
         protected IntegrationHelper $integrationHelper
@@ -64,7 +66,8 @@ abstract class SocialIntegration extends AbstractIntegration
             $notificationModel,
             $fieldModel,
             $integrationEntityModel,
-            $doNotContact
+            $doNotContact,
+            $fieldsWithUniqueIdentifier
         );
     }
 
