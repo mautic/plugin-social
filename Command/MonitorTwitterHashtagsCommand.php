@@ -12,14 +12,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 class MonitorTwitterHashtagsCommand extends MonitorTwitterBaseCommand
 {
     /**
-     * Configure the command, set name and options.
-     */
-    protected function configure()
-    {
-        parent::configure();
-    }
-
-    /**
      * Search for tweets by hashtag.
      *
      * @param Monitoring $monitor
