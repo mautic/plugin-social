@@ -31,6 +31,7 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
         Assert::assertSame($monitoringId, $responseData['id']);
         Assert::assertSame('Test Monitoring', $responseData['title']);
         Assert::assertSame('type', $responseData['networkType']);
+        Assert::assertNotNull('uuid', $responseData['uuid']);
     }
 
     public function testPutOperationWorksGloballyForMonitoringEntity(): void
