@@ -11,97 +11,116 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class MonitoringV2ApiTest extends MauticMysqlTestCase
 {
-    public function testGetOperationWorks(): void
-    {
+    private function createMonitoring(
+        string $title = 'Test Monitoring',
+        string $networkType = 'type',
+        ?string $description = null,
+    ): Monitoring {
         $monitoring = new Monitoring();
-        $monitoring->setTitle('Test Monitoring');
-        $monitoring->setNetworkType('type');
+        $monitoring->setTitle($title);
+        $monitoring->setNetworkType($networkType);
+        if (null !== $description) {
+            $monitoring->setDescription($description);
+        }
         $this->em->persist($monitoring);
         $this->em->flush();
 
+        return $monitoring;
+    }
+
+    /**
+     * @param array<string,mixed> $data
+     *
+     * @return array<string,?mixed>
+     */
+    private function sendRequest(
+        string $method,
+        string $uri,
+        array $data = [],
+    ): array {
+        $headers = [
+            'CONTENT_TYPE' => 'application/ld+json',
+            'HTTP_ACCEPT'  => 'application/ld+json',
+        ];
+
+        $this->client->request(
+            $method,
+            $uri,
+            [],
+            [],
+            $headers,
+            !empty($data) ? json_encode($data) : null
+        );
+
+        return [
+            'status'  => $this->client->getResponse()->getStatusCode(),
+            'content' => $this->client->getResponse()->getContent(),
+        ];
+    }
+
+    public function testGetOperationWorks(): void
+    {
+        $monitoring   = $this->createMonitoring();
         $monitoringId = $monitoring->getId();
 
-        $this->client->request('GET', '/api/v2/monitorings/'.$monitoringId);
+        $response = $this->sendRequest('GET', '/api/v2/monitorings/'.$monitoringId);
 
         $this->assertResponseIsSuccessful();
 
-        $responseData = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response['content'], true);
 
         Assert::assertArrayHasKey('id', $responseData);
         Assert::assertSame($monitoringId, $responseData['id']);
         Assert::assertSame('Test Monitoring', $responseData['title']);
         Assert::assertSame('type', $responseData['networkType']);
-        Assert::assertNotNull('uuid', $responseData['uuid']);
+        Assert::assertArrayHasKey('uuid', $responseData['uuid']);
     }
 
     public function testPutOperationWorksGloballyForMonitoringEntity(): void
     {
-        $monitoring = new Monitoring();
-        $monitoring->setTitle('Original Monitoring');
-        $monitoring->setNetworkType('type');
-        $monitoring->setDescription('Test Description');
-        $this->em->persist($monitoring);
-        $this->em->flush();
-
+        $monitoring = $this->createMonitoring('Original Monitoring', 'type', 'Test Description');
         $originalId = $monitoring->getId();
 
-        $this->client->request(
+        $response = $this->sendRequest(
             'PUT',
             '/api/v2/monitorings/'.$originalId,
-            [],
-            [],
             [
-                'CONTENT_TYPE' => 'application/ld+json',
-                'HTTP_ACCEPT'  => 'application/ld+json',
-            ],
-            json_encode([
-                'title'         => 'Updated Monitoring',
-                'networkType'   => 'type',
-                'description'   => 'Test Description Updated',
-            ])
+                'title'       => 'Updated Monitoring',
+                'networkType' => 'type',
+                'description' => 'Test Description Updated',
+            ]
         );
 
         $this->assertResponseIsSuccessful();
 
-        $response = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response['content'], true);
 
-        Assert::assertSame($originalId, $response['id']);
-        Assert::assertSame('Updated Monitoring', $response['title']);
-        Assert::assertSame('Test Description Updated', $response['description']);
+        Assert::assertSame($originalId, $responseData['id']);
+        Assert::assertSame('Updated Monitoring', $responseData['title']);
+        Assert::assertSame('Test Description Updated', $responseData['description']);
     }
 
     public function testPutOperationUpdatesExistingMonitoring(): void
     {
-        $monitoring = new Monitoring();
-        $monitoring->setTitle('Original Monitoring');
-        $monitoring->setNetworkType('type');
-        $this->em->persist($monitoring);
-        $this->em->flush();
-
+        $monitoring = $this->createMonitoring('Original Monitoring');
         $originalId = $monitoring->getId();
 
-        $this->client->request(
+        $response = $this->sendRequest(
             'PUT',
             '/api/v2/monitorings/'.$originalId,
-            [],
-            [],
             [
-                'CONTENT_TYPE' => 'application/ld+json',
-                'HTTP_ACCEPT'  => 'application/ld+json',
-            ],
-            json_encode([
                 'title'       => 'Updated Monitoring',
                 'networkType' => 'type',
-            ])
+            ]
         );
 
         $this->assertResponseIsSuccessful();
 
-        $response = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response['content'], true);
 
-        Assert::assertSame($originalId, $response['id']);
-        Assert::assertSame('Updated Monitoring', $response['title']);
-        Assert::assertSame('type', $response['networkType']);
+        Assert::assertSame($originalId, $responseData['id']);
+        Assert::assertSame('Updated Monitoring', $responseData['title']);
+        Assert::assertSame('type', $responseData['networkType']);
 
         $this->em->clear();
         $monitorings = $this->em->getRepository(Monitoring::class)->findAll();
@@ -115,90 +134,67 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
     {
         $nonExistentId = 99999;
 
-        $this->client->request(
+        $response = $this->sendRequest(
             'PUT',
             '/api/v2/monitorings/'.$nonExistentId,
-            [],
-            [],
             [
-                'CONTENT_TYPE' => 'application/ld+json',
-                'HTTP_ACCEPT'  => 'application/ld+json',
-            ],
-            json_encode([
                 'title'       => 'Test Monitoring',
                 'networkType' => 'type',
-            ])
+            ]
         );
 
-        Assert::assertSame(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
+        Assert::assertSame(Response::HTTP_NOT_FOUND, $response['status']);
     }
 
     public function testPostOperationCreatesNewMonitoring(): void
     {
-        $this->client->request(
+        $response = $this->sendRequest(
             'POST',
             '/api/v2/monitorings',
-            [],
-            [],
             [
-                'CONTENT_TYPE' => 'application/ld+json',
-                'HTTP_ACCEPT'  => 'application/ld+json',
-            ],
-            json_encode([
                 'title'       => 'New Monitoring',
                 'networkType' => 'type',
-            ])
+            ]
         );
 
         $this->assertResponseIsSuccessful();
 
-        $response = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response['content'], true);
 
-        Assert::assertIsInt($response['id']);
-        Assert::assertSame('New Monitoring', $response['title']);
-        Assert::assertSame('type', $response['networkType']);
+        Assert::assertIsInt($responseData['id']);
+        Assert::assertSame('New Monitoring', $responseData['title']);
+        Assert::assertSame('type', $responseData['networkType']);
 
         $this->em->clear();
-        $monitoring = $this->em->getRepository(Monitoring::class)->find($response['id']);
+        $monitoring = $this->em->getRepository(Monitoring::class)->find($responseData['id']);
         Assert::assertNotNull($monitoring);
         Assert::assertSame('New Monitoring', $monitoring->getTitle());
     }
 
     public function testPutOperationReplacesEntireResource(): void
     {
-        $monitoring = new Monitoring();
-        $monitoring->setTitle('Original Monitoring');
-        $monitoring->setNetworkType('type');
-        $this->em->persist($monitoring);
-        $this->em->flush();
-
+        $monitoring = $this->createMonitoring('Original Monitoring');
         $originalId = $monitoring->getId();
 
-        $this->client->request(
+        $response = $this->sendRequest(
             'PUT',
             '/api/v2/monitorings/'.$originalId,
-            [],
-            [],
             [
-                'CONTENT_TYPE' => 'application/ld+json',
-                'HTTP_ACCEPT'  => 'application/ld+json',
-            ],
-            json_encode([
                 'title'       => 'Updated Monitoring Title Only',
                 'networkType' => 'type',
                 // description intentionally omitted
-            ])
+            ]
         );
 
-        Assert::assertSame(200, $this->client->getResponse()->getStatusCode());
+        Assert::assertSame(200, $response['status']);
 
-        $response = json_decode($this->client->getResponse()->getContent(), true);
+        $responseData = json_decode($response['content'], true);
 
-        Assert::assertSame($originalId, $response['id']);
-        Assert::assertSame('Updated Monitoring Title Only', $response['title']);
+        Assert::assertSame($originalId, $responseData['id']);
+        Assert::assertSame('Updated Monitoring Title Only', $responseData['title']);
 
-        if (array_key_exists('description', $response)) {
-            Assert::assertNull($response['description']);
+        if (array_key_exists('description', $responseData)) {
+            Assert::assertNull($responseData['description']);
         }
 
         $this->em->clear();
