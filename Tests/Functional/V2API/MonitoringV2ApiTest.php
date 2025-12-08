@@ -73,7 +73,7 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
         Assert::assertSame($monitoringId, $responseData['id']);
         Assert::assertSame('Test Monitoring', $responseData['title']);
         Assert::assertSame('type', $responseData['networkType']);
-        Assert::assertArrayHasKey('uuid', $responseData['uuid']);
+        Assert::assertArrayHasKey('uuid', $responseData);
     }
 
     public function testPutOperationWorksGloballyForMonitoringEntity(): void
@@ -173,7 +173,7 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
 
     public function testPutOperationReplacesEntireResource(): void
     {
-        $monitoring = $this->createMonitoring('Original Monitoring');
+        $monitoring = $this->createMonitoring('Original Monitoring', 'type', 'Original Description');
         $originalId = $monitoring->getId();
 
         $response = $this->sendRequest(
