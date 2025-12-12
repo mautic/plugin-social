@@ -12,6 +12,7 @@ use Mautic\LeadBundle\Controller\EntityContactsTrait;
 use MauticPlugin\MauticSocialBundle\Entity\Monitoring;
 use MauticPlugin\MauticSocialBundle\Model\MonitoringModel;
 use Symfony\Component\Form\SubmitButton;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -229,7 +230,7 @@ class MonitoringController extends FormController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function editAction(Request $request, IpLookupHelper $ipLookupHelper, $objectId, bool $ignorePost = false)
     {
