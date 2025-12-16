@@ -29,7 +29,8 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
     }
 
     /**
-     * @param array<string,mixed> $data
+     * @param array<string,mixed>  $data
+     * @param array<string,string> $headers
      *
      * @return array<string,?mixed>
      */
@@ -37,12 +38,11 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
         string $method,
         string $uri,
         array $data = [],
-    ): array {
-        $headers = [
+        array $headers = [
             'CONTENT_TYPE' => 'application/ld+json',
             'HTTP_ACCEPT'  => 'application/ld+json',
-        ];
-
+        ],
+    ): array {
         $this->client->request(
             $method,
             $uri,
@@ -202,5 +202,52 @@ final class MonitoringV2ApiTest extends MauticMysqlTestCase
         Assert::assertNotNull($updatedMonitoring);
         Assert::assertSame('Updated Monitoring Title Only', $updatedMonitoring->getTitle());
         Assert::assertNull($updatedMonitoring->getDescription());
+    }
+
+    public function testDeleteOperationWorks(): void
+    {
+        $monitoring   = $this->createMonitoring();
+        $monitoringId = $monitoring->getId();
+
+        $this->sendRequest('DELETE', '/api/v2/monitorings/'.$monitoringId);
+
+        $this->assertResponseIsSuccessful();
+
+        $this->em->clear();
+        $monitoring = $this->em->getRepository(Monitoring::class)->find($monitoringId);
+        Assert::assertNull($monitoring);
+    }
+
+    public function testPatchOperationReplacesOnlyResourceProperty(): void
+    {
+        $monitoring = $this->createMonitoring('Original Monitoring', 'type', 'Original Description');
+        $originalId = $monitoring->getId();
+
+        $response = $this->sendRequest(
+            'PATCH',
+            '/api/v2/monitorings/'.$originalId,
+            [
+                'title'       => 'Updated Monitoring Title Only',
+                // description intentionally omitted
+            ],
+            [
+                'CONTENT_TYPE' => 'application/merge-patch+json',
+                'HTTP_ACCEPT'  => 'application/ld+json',
+            ]
+        );
+
+        Assert::assertSame(200, $response['status']);
+
+        $responseData = json_decode($response['content'], true);
+
+        Assert::assertSame($originalId, $responseData['id']);
+        Assert::assertSame('Updated Monitoring Title Only', $responseData['title']);
+        Assert::assertSame('Original Description', $responseData['description']);
+
+        $this->em->clear();
+        $updatedMonitoring = $this->em->getRepository(Monitoring::class)->find($originalId);
+        Assert::assertNotNull($updatedMonitoring);
+        Assert::assertSame('Updated Monitoring Title Only', $updatedMonitoring->getTitle());
+        Assert::assertSame('Original Description', $updatedMonitoring->getDescription());
     }
 }
