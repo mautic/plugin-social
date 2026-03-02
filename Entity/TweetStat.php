@@ -61,9 +61,9 @@ class TweetStat
     private ?int $retweetCount = 0;
 
     /**
-     * @var mixed[]
+     * @var ?mixed[]
      */
-    private array $responseDetails = [];
+    private ?array $responseDetails = [];
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
@@ -362,7 +362,7 @@ class TweetStat
     }
 
     /**
-     * @return mixed[]
+     * @return ?mixed[]
      */
     public function getResponseDetails()
     {
@@ -370,7 +370,7 @@ class TweetStat
     }
 
     /**
-     * @param mixed $responseDetails
+     * @param ?mixed[] $responseDetails
      *
      * @return self
      */
