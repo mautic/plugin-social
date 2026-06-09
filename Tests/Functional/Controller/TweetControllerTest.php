@@ -47,7 +47,7 @@ class TweetControllerTest extends MauticMysqlTestCase
         $form['twitter_tweet[name]']->setValue($name);
         $form['twitter_tweet[text]']->setValue('Here is the first tweet');
 
-        $crawler  = $this->client->submit($form);
+        $this->client->submit($form);
         $response = $this->client->getResponse();
         $this->assertTrue($response->isOk());
 
