@@ -27,7 +27,7 @@ class MonitoringController extends FormController
     public function indexAction(Request $request, MonitoringModel $model, $page = 1): Response
     {
         if (!$this->security->isGranted('mauticSocial:monitoring:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $session = $request->getSession();
@@ -114,7 +114,7 @@ class MonitoringController extends FormController
     public function newAction(Request $request, MonitoringModel $model, IpLookupHelper $ipLookupHelper): Response
     {
         if (!$this->security->isGranted('mauticSocial:monitoring:create')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $action = $this->generateUrl('mautic_social_action', ['objectAction' => 'new']);
@@ -231,7 +231,7 @@ class MonitoringController extends FormController
     public function editAction(Request $request, IpLookupHelper $ipLookupHelper, $objectId, bool $ignorePost = false): Response
     {
         if (!$this->security->isGranted('mauticSocial:monitoring:edit')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $action = $this->generateUrl('mautic_social_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
@@ -385,7 +385,7 @@ class MonitoringController extends FormController
     public function viewAction(Request $request, $objectId): Response
     {
         if (!$this->security->isGranted('mauticSocial:monitoring:view')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $session = $request->getSession();
@@ -494,7 +494,7 @@ class MonitoringController extends FormController
     public function deleteAction(Request $request, IpLookupHelper $ipLookupHelper, $objectId)
     {
         if (!$this->security->isGranted('mauticSocial:monitoring:delete')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $session   = $request->getSession();
@@ -559,7 +559,7 @@ class MonitoringController extends FormController
     public function batchDeleteAction(Request $request): Response
     {
         if (!$this->security->isGranted('mauticSocial:monitoring:delete')) {
-            $this->checkAccessDenied();
+            $this->throwAccessDenied();
         }
 
         $session   = $request->getSession();
