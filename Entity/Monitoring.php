@@ -272,8 +272,6 @@ class Monitoring extends FormEntity implements UuidInterface
      * Set description.
      *
      * @param string $description
-     *
-     * @return Monitoring
      */
     public function setDescription($description): static
     {
@@ -285,8 +283,6 @@ class Monitoring extends FormEntity implements UuidInterface
 
     /**
      * Set the monitor lists.
-     *
-     * @return Monitoring
      */
     public function setLists($lists): static
     {
@@ -298,8 +294,6 @@ class Monitoring extends FormEntity implements UuidInterface
 
     /**
      * Set the network type.
-     *
-     * @return Monitoring
      */
     public function setNetworkType($networkType): static
     {
@@ -313,8 +307,6 @@ class Monitoring extends FormEntity implements UuidInterface
      * Set the revision counter.
      *
      * @param int $revision
-     *
-     * @return Monitoring
      */
     public function setRevision($revision): static
     {
@@ -328,8 +320,6 @@ class Monitoring extends FormEntity implements UuidInterface
      * Set the statistics.
      *
      * @param array $stats
-     *
-     * @return Monitoring
      */
     public function setStats($stats): static
     {
@@ -343,8 +333,6 @@ class Monitoring extends FormEntity implements UuidInterface
      * Set name.
      *
      * @param string $title
-     *
-     * @return Monitoring
      */
     public function setTitle($title): static
     {
@@ -358,8 +346,6 @@ class Monitoring extends FormEntity implements UuidInterface
      * Set properties.
      *
      * @param array $properties
-     *
-     * @return Monitoring
      */
     public function setProperties($properties): static
     {
@@ -373,8 +359,6 @@ class Monitoring extends FormEntity implements UuidInterface
      * Set publishDown.
      *
      * @param \DateTime $publishDown
-     *
-     * @return Monitoring
      */
     public function setPublishDown($publishDown): static
     {
@@ -388,8 +372,6 @@ class Monitoring extends FormEntity implements UuidInterface
      * Set publishUp.
      *
      * @param \DateTime $publishUp
-     *
-     * @return Monitoring
      */
     public function setPublishUp($publishUp): static
     {

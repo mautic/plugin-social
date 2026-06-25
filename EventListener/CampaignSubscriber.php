@@ -47,7 +47,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onCampaignAction(CampaignExecutionEvent $event)
+    public function onCampaignAction(CampaignExecutionEvent $event): CampaignExecutionEvent
     {
         $event->setChannel('social.twitter');
         if ($response = $this->campaignEventHelper->sendTweetAction($event->getLead(), $event->getEvent())) {

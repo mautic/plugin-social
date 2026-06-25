@@ -334,8 +334,6 @@ class TweetStat
 
     /**
      * @param ?mixed[] $responseDetails
-     *
-     * @return self
      */
     public function setResponseDetails(?array $responseDetails): static
     {
