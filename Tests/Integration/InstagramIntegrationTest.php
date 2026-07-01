@@ -8,7 +8,7 @@ use Mautic\PluginBundle\Tests\Integration\AbstractIntegrationTestCase;
 use MauticPlugin\MauticSocialBundle\Integration\InstagramIntegration;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(InstagramIntegration::class)]
-class InstagramIntegrationTest extends AbstractIntegrationTestCase
+final class InstagramIntegrationTest extends AbstractIntegrationTestCase
 {
     private InstagramIntegration $integration;
 

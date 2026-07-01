@@ -8,7 +8,7 @@ use Mautic\PluginBundle\Tests\Integration\AbstractIntegrationTestCase;
 use MauticPlugin\MauticSocialBundle\Integration\FoursquareIntegration;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(FoursquareIntegration::class)]
-class FoursquareIntegrationTest extends AbstractIntegrationTestCase
+final class FoursquareIntegrationTest extends AbstractIntegrationTestCase
 {
     private FoursquareIntegration $integration;
 
